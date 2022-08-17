@@ -1,0 +1,64 @@
+class RestaurantsController < ApplicationController
+
+  def index
+    @restaurants = Restaurant.all
+  end
+
+  # GET /restaurants/1
+  def show
+    @restaurant = Restaurant.find(params[:id])
+    @review = Review.new
+  end
+
+  # GET /restaurants/new
+  def new
+    @restaurant = Restaurant.new
+  end
+
+  # GET /restaurants/1/edit
+  def edit
+  end
+
+  # POST /restaurants
+  def create
+    @restaurant = Restaurant.new(restaurant_params)
+
+    if @restaurant.save
+      redirect_to @restaurant, notice: "Restaurant was successfully created."
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
+
+  # PATCH/PUT /restaurants/1
+  def update
+    if @restaurant.update(restaurant_params)
+      redirect_to @restaurant, notice: "Restaurant was successfully updated."
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  # DELETE /restaurants/1
+  def destroy
+    @restaurant.destroy
+    redirect_to restaurants_url, notice: "Restaurant was successfully destroyed."
+  end
+
+  def top
+    @restaurants = Restaurant.where(stars: 5)
+  end
+
+
+  private
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_restaurant
+    @restaurant = Restaurant.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def restaurant_params
+    params.require(:restaurant).permit(:name, :address, :phone_number, :category)
+  end
+end
